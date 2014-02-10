@@ -1,10 +1,10 @@
-b10820588d5690fe5a8a536d370fa369 *DESCRIPTION
-92daaf96d418c5e8ffdd56f41d105d50 *NAMESPACE
+5c161bc2c3f27d75fb73b7a794d2f43c *DESCRIPTION
+0c88006b2881748b61e33201d4ac0721 *NAMESPACE
 e285008be53eece96f4fee6aa5295849 *R/Cut.Group.R
 908ae82d87130834f4718082eeac9839 *R/Lg.R
 350fc40ef13fa536dbd26605598fee10 *R/Lg.pond.R
 e691d0e3c8bc1fae14708af0385e5474 *R/MFAmix.R
-8fa846e04ca61d9fd267c23ccca07714 *R/PCAmix.R
+7bd15db13f1eef80a63e95cb353abe46 *R/PCAmix.R
 253b49dd58410fe8631e3c4b46abc3f4 *R/PCArot.R
 069d3df26dacf257722740b2c22667f5 *R/RV.R
 749ac9f9b3807d9b7ab8adfbbe031b87 *R/RV.pond.R
@@ -12,6 +12,7 @@ e691d0e3c8bc1fae14708af0385e5474 *R/MFAmix.R
 10faf3717766008882812d192e3fe76d *R/nb.level.R
 7bdfff7cd8609328b08280835d82d139 *R/plot.MFAmix.R
 082a42c1a876cee8ea7e51bc0c45597b *R/plot.PCAmix.R
+375e614b097734041943755eae31e701 *R/predict.MFAmix.R
 8af7e6b158538235e14378afde29d4be *R/predict.PCAmix.R
 2d1892e91e05ac3a7077ca998638db80 *R/print.MFAmix.R
 ae5221e9c36c38b8212984cc43a638cb *R/print.PCAmix.R
@@ -43,10 +44,11 @@ d2366f73fb277c927b7e59a8f80fa185 *man/Tri.Data.Rd
 a20ca6d7551f354534fa1a943b6a964d *man/nb.level.Rd
 a6dbdf887c97bdbf14dcb830dec9cd96 *man/plot.MFAmix.Rd
 40bce33b4da5b130498afb1ed13d8c54 *man/plot.PCAmix.Rd
+ba2ac52614fcf8f6a2baef31aaea4cd9 *man/predict.MFAmix.Rd
 880179da560f7d19ee765746575fefed *man/predict.PCAmix.Rd
 28e0a85c25aafebcb995c814ef2b6b1c *man/print.MFAmix.Rd
 251c9e9705e8cf5952e7f731a094c0c5 *man/print.PCAmix.Rd
-2a8ba875d59ae38eff015b62046d2fa3 *man/recod.Rd
+4911f69a96c1311f9debca719b41d392 *man/recod.Rd
 ca98e2e804805542984d546494ebb7d5 *man/recodqual.Rd
 fea4ebba3ed9a0c290a4e88d7d4e41cd *man/recodquant.Rd
 af991c84f3893f90fa3071763b2b6d43 *man/sol.2dim.Rd

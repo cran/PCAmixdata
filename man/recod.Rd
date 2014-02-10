@@ -14,8 +14,8 @@
   matrix}
 
   \item{Y}{X.quanti with missing values replaced with mean
-  values and X.quali with missing values replaced by zeros,
-  concatenated in a single matrix}
+  values concatenated with the indicator
+  matrix of X.quali with missing values replaced by zeros}
 
   \item{Z}{X.quanti standardized (centered and reduced by
   standard deviations) concatenated with the indicator
@@ -34,10 +34,10 @@
 
   \item{p2}{the number of qualitative variables}
 
-  \item{g}{the means of the columns of X.quanti}
+  \item{g}{the means of the columns of Y}
 
   \item{s}{the standard deviations of the columns of
-  X.quanti (population version with 1/n)}
+  Y}
 
   \item{G}{The indicator matix of X.quali with missing
   values replaced by 0}
