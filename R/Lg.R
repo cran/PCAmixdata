@@ -24,7 +24,8 @@ Lg<-function(liste.mat){
   nbr.mat<-length(liste.mat)
   Z.liste<-list()
   for (i in 1:nbr.mat){
-    Z.liste[[i]]<-recod(X.quanti=Tri.Data(liste.mat[[i]])$X.quanti,X.quali=Tri.Data(liste.mat[[i]])$X.quali)$Z   
+    Z.liste[[i]]<-recod(X.quanti=splitmix(liste.mat[[i]])$X.quanti,X.quali=splitmix(liste.mat[[i]])$X.quali,rename.level=TRUE)$Y 
+    Z.liste[[i]]<-scale(Z.liste[[i]],scale=F)
   }
   names(Z.liste)<-names(liste.mat)
   

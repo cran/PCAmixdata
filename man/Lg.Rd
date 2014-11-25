@@ -5,19 +5,21 @@
   Lg(liste.mat)
 }
 \arguments{
-  \item{liste.mat}{a list of \code{G} matrix}
+  \item{liste.mat}{  a list of \code{k} matrices.}
 }
+
 \value{
-  \item{Lg}{a data frame with \code{G} rows and \code{G}
-  colums with all the Lg coefficients}
+Returns a  matrix of dimension (\code{k}, \code{k}) containing the Lg coefficients.
 }
+
 \description{
-  Compute a data fame with all the Lg coefficients between
-  each matrix of a list
+  Computes the Lg coefficient between matrices.
 }
+
 \seealso{
-\code{\link{RV}},\code{\link{RV.pond}},\code{\link{Lg.pond}}, 
+\code{\link{RV}}, \code{\link{RV.pond}}, \code{\link{Lg.pond}}, 
 }
+
 \examples{
 V0<-c("a","b","a","a","b")
 V01<-c("c","d","e","c","e")
@@ -36,6 +38,6 @@ Lg(liste.mat)
 \references{
   {Escofier B et Pages J (1998), Analyses factorielles simples et multiples, Dunod, 3e ed.
   
-  J.Pages,Analyse factorielle multiple appliquee aux variables qualitatives et aux donnees mixtes. Revue de statistique appliquee, tome 50, num 4 (2002), p. 5-37}
+  Pages J, Analyse factorielle multiple appliquee aux variables qualitatives et aux donnees mixtes. Revue de statistique appliquee, tome 50, num 4 (2002), p. 5-37}
 }
 

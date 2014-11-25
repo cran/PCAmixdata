@@ -19,7 +19,7 @@
 }
 
 \value{
-  Returns the total number of observations, the number of numerical variables, the number of categorical variables with the total number of categories. And all those values are declinated by groups.
+  Returns the total number of observations, the number of quantitative variables, the number of qualitative variables with the total number of levels. And all those values are also given by groups.
 }
 
 

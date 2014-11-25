@@ -1,31 +1,5 @@
-#' @export
-#' @title Recoding of the quantitative and qualitative data matrix
-#' @name recod
-#' @param X.quanti  numeric matrix of data
-#' @param X.quali  a categorical matrix of data
-#' @return \item{X}{X.quanti and X.quali concatenated in a single matrix}
-#' @return \item{Y}{X.quanti with missing values replaced with 
-#' mean values and the indicator matrix of X.quali with missing
-#' values replaced by zeros, concatenated in a single matrix}
-#' @return \item{Z}{X.quanti standardized (centered and reduced by standard deviations) 
-#' concatenated with the indicator matrix of X.quali centered and reduced with the
-#' square roots of the relative frequencies of the categories}
-#' @return \item{W}{X.quanti standardized (centered and reduced by standard deviations) 
-#' concatenated with the indicator matrix of X.quali centered}
-#' @return \item{n}{the number of objects}
-#' @return \item{p}{the total number of variables}
-#' @return \item{p1}{the number of quantitative variables}
-#' @return \item{p2}{the number of qualitative variables}
-#'  @return \item{g}{the means of the columns of X.quanti}
-#' @return \item{s}{the standard deviations of the columns of X.quanti (population version with 1/n)}
-#' @return \item{G}{The indicator matix of X.quali with missing values replaced by 0}
-#'  @return \item{Gcod}{The indicator matix G reduced with the
-#' square roots of the relative frequencies of the categories}
-#' 
-
-
 recod <-
-  function(X.quanti,X.quali)
+  function(X.quanti,X.quali,rename.level=FALSE)
   {
     G <- NULL
     Gcod <- NULL
@@ -39,6 +13,7 @@ recod <-
           stop("All variables in X.quanti must be numeric")}
       n1 <- nrow(X.quanti)
       p1 <- ncol(X.quanti)
+      
       recodqt <- recodquant(X.quanti)
       Z1 <- recodqt$Z
       g1 <- recodqt$g
@@ -53,10 +28,15 @@ recod <-
       for (v in 1:ncol(X.quali)) {
         if (is.numeric(X.quali[, v])) 
           stop("All variables in X.quali must be categorical") }
+      test.name.categ<-length(as.character(unlist(apply(X.quali,2,unique))))==
+        length(as.character(unique(unlist(apply(X.quali,2,unique)))))
+      if(test.name.categ==FALSE && rename.level==FALSE)
+        stop("Some categorical variables have same names of categories,
+             rename categories or use the option rename.level=TRUE to rename it automatically")
       for (v in 1:ncol(X.quali)) X.quali[,v] <- factor(as.character(X.quali[,v])) 
       n2 <- nrow(X.quali)
       p2 <- ncol(X.quali)
-      G <- recodqual(X.quali)
+      G <- recodqual(X.quali,rename.level)
       g2 <- apply(G,2,mean)
       ns <- apply(G,2,sum)
       s2 <- sqrt(ns/nrow(G))
@@ -121,4 +101,5 @@ recod <-
     
     return(list(X=X,Y=Y,Z=Z,W=W,n=n,p=p,p1=p1,p2=p2,g=g,s=s,indexj=indexj,G=G,Gcod=Gcod,X.quanti=X.quanti,X.quali=X.quali))
   }
+
 

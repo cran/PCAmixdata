@@ -13,12 +13,12 @@ summary.MFAmix <-function(object, ...){
   colnames(Tab.recap)<-c("Number of numerical variables","Number of categorical variables","Total number of categories")
   rownames(Tab.recap)<-names(x$separate.analyses)
   for (g in 1:length(x$separate.analyses)){    
-    if (!is.null(nrow(x$separate.analyses[[g]]$res.quanti$coord))){
-      Tab.recap[g,1]<-nrow(x$separate.analyses[[g]]$res.quanti$coord)
+    if (!is.null(nrow(x$separate.analyses[[g]]$quanti$coord))){
+      Tab.recap[g,1]<-nrow(x$separate.analyses[[g]]$quanti$coord)
     }
-    if (!is.null(nrow(x$separate.analyses[[g]]$res.categ$contrib.quali))){
-      Tab.recap[g,2]<-nrow(x$separate.analyses[[g]]$res.categ$contrib.quali)
-      Tab.recap[g,3]<-nrow(x$separate.analyses[[g]]$res.categ$coord)
+    if (!is.null(nrow(x$separate.analyses[[g]]$quali$contrib.pct))){
+      Tab.recap[g,2]<-nrow(x$separate.analyses[[g]]$quali$contrib.pct)
+      Tab.recap[g,3]<-nrow(x$separate.analyses[[g]]$levels$coord)
     } 
   }
   Tab.recap<-t(Tab.recap)

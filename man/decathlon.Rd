@@ -21,7 +21,14 @@ corresponding to the sporting event (2004 Olympic Game or 2004 Decastar)
 }
 
 \source{
-Departement of Applied Mathematics, Agrocampus Rennes
+The references below.
+}
+
+\references{
+{Departement of Applied Mathematics, Agrocampus Rennes.
+
+Le, S., Josse, J. & Husson, F. (2008). FactoMineR: An R Package for Multivariate Analysis. Journal of Statistical Software. 25(1). pp. 1-18.
+}
 }
 
 

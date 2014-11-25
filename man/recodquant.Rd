@@ -5,11 +5,11 @@
   recodquant(X)
 }
 \arguments{
-  \item{X}{the quantitative data matrix}
+  \item{X}{the quantitative data matrix.}
 }
 \value{
   \item{Z}{the standardized quantitative data matrix
-  (centered and reduced with the standard deviations)}
+  (centered and reduced with the standard deviations.)}
 
   \item{g}{the means of the columns of X}
 
@@ -17,10 +17,10 @@
   (population version with 1/n)}
 
   \item{Xcod}{The quantitative matrix X with missing values
-  replaced with the column mean values}
+  replaced with the column mean values.}
 }
 \description{
-  Recoding of the quantitative data matrix
+  Recoding of the quantitative data matrix.
 }
 \examples{
 data(decathlon)

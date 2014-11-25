@@ -5,19 +5,22 @@
   RV.pond(liste.mat, ponde)
 }
 \arguments{
-  \item{liste.mat}{a list of \code{G} matrix}
+  \item{liste.mat}{a list of \code{k} matrices.}
 
-  \item{ponde}{a vector of size \code{G} with the
-  ponderation associated to each matrix}
+  \item{ponde}{vector of size \code{k} with the
+  ponderation of each matrix.}
 }
 \value{
-  \item{RV.pond}{a data frame with \code{G} rows and
-  \code{G} colums with all the RV coefficients ponderated}
-}
+Returns a matrix  of dimension (\code{k}, \code{k}) with all the weighted RV coefficients.
+ }
 \description{
-  Compute a data fame with all the RV coefficients between
-  each matrix of a list ponderated
+  Computes weighted RV coefficients between matrices.
 }
+
+\seealso{
+\code{\link{RV}}, \code{\link{Lg}}, \code{\link{Lg.pond}}, 
+}
+
 \examples{
 V0<-c("a","b","a","a","b")
 V01<-c("c","d","e","c","e")
@@ -32,5 +35,11 @@ G3<-data.frame(V4,V5)
 liste.mat<-list(G1,G2,G3)
 ponderation<-c(1,2,1)
 RV.pond(liste.mat,ponderation)
+}
+
+\references{
+  {Escofier B et Pages J (1998), Analyses factorielles simples et multiples, Dunod, 3e ed.
+  
+  Pages J, Analyse factorielle multiple appliquee aux variables qualitatives et aux donnees mixtes. Revue de statistique appliquee, tome 50, num 4 (2002), p. 5-37}
 }
 

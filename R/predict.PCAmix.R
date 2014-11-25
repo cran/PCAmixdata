@@ -1,26 +1,3 @@
-#' @S3method predict PCAmix
-#' @export
-#' @name predict.PCAmix
-#' @title Scores of new objects on the principal components of PCAmix or PCArot
-#' @description This function calculates the scores of a new set of data on the 
-#' principal components of PCA. If the components have been rotated, the function gives
-#' the scores of the new objects on the rotated PC. The new objects must have the same 
-#' variables than the learning set.
-#' @param object  an object of class PCAmix (output of the function PCAmix or PCArot)
-#' @param X.quanti  numeric matrix of data for the new objects
-#' @param X.quali  a categorical matrix of data for the new objects
-#' @param ... futher arguments pased to or from other methods
-#' @return Returns the matrix of the scores of the new objects of the ndim principal PC or rotated PC.
-#' @author Marie Chavent \email{marie.chavent@@math.u-bordeaux1.fr}, Vanessa Kuentz, Benoit Liquet, Jerome Saracco
-#' @examples  
-#'data(decathlon)
-#'n <- nrow(decathlon)
-#'sub <- sample(1:n,20)
-#'pca<-PCAmix(decathlon[sub,1:10], graph=FALSE)
-#'predict(pca,decathlon[-sub,1:10])
-#'rot <- PCArot(pca,dim=4)
-#'predict(rot,decathlon[-sub,1:10])
-#' 
 predict.PCAmix <- function(object,X.quanti=NULL,X.quali=NULL,...)
 {
   pca<-object
@@ -31,8 +8,18 @@ predict.PCAmix <- function(object,X.quanti=NULL,X.quali=NULL,...)
   Y <- rec$Y
   n <- rec$n
   beta <- pca$coef
-  if ((length(beta[[1]])-1)!=ncol(Y))
-    stop("The number of categories in the learning set is different than in X.quali")
+  
+  ncol_tot<-length(beta[[1]])-1
+  #test if the subsample of individual to predict has all the levels of the categ var
+  if (ncol_tot!=ncol(Y)){
+    Ymodif<-matrix(0,nrow=n,ncol=ncol_tot)
+    colname.part<-colnames(Y)
+    colname.tot<-names(beta[[1]][-1,])
+    colnames(Ymodif)<-colname.tot
+    Ymodif[,colname.part]<-Y[,colname.part]
+    Y<-Ymodif  
+  }
+    
   if (!is.null(X.quanti)) 
     {
     label <- rownames(X.quanti)
@@ -53,13 +40,13 @@ predict.PCAmix <- function(object,X.quanti=NULL,X.quali=NULL,...)
     if (sum(rownames(X.quali)!=rownames(X.quanti))!=0) stop("The names of the objects in X.quanti and X.quali must be the same")
   }
   
-  scores <- matrix(,n,length(beta))
-  for (g in 1: length(beta)) scores[,g] <-Y %*% beta[[g]][-1] +  beta[[g]][1]
+  coord <- matrix(,n,length(beta))
+  for (g in 1: length(beta)) coord[,g] <-Y %*% beta[[g]][-1] +  beta[[g]][1]
   
-  if (colnames(pca$sload)[1]=="dim1.rot")  
-    colnames(scores) <- paste("dim", 1:length(beta), sep = "",".rot")
+  if (colnames(pca$sqload)[1]=="dim1.rot")  
+    colnames(coord) <- paste("dim", 1:length(beta), sep = "",".rot")
   else
-    colnames(scores) <- paste("dim", 1:length(beta), sep = "")
-  rownames(scores) <- label
-  return(scores)			
+    colnames(coord) <- paste("dim", 1:length(beta), sep = "")
+  rownames(coord) <- label
+  return(coord)			
 }

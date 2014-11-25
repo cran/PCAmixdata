@@ -1,130 +1,107 @@
-#' @export
-#' @name MFAmix
-#' @title Multiple Factor Analysis for a mixture of qualitative and quantitative variables inside the groups
-#' @description Performs Multiple Factor Analysis in the sense of Escofier-Pages. Groups of variables can be quantitative,
-#' categorical or contain both quantitatives and categoricals variables.
-#' @param data a data frame with \code{n} rows and \code{p} colums containing all the variables.
-#' This data data frame will be split in \code{G} groups according to the vector \code{group}
-#' @param group a vector of size \code{p} whose values indicate at which group belongs each variable
-#' @param name.group a vector of size \code{G} which contains names for each group we want to create.
-#' Each name must be written as a charactor chain without any spaces
-#' @param ndim number of dimensions kept in the results
-#' @param graph boolean, if TRUE (default) a graph is displayed
-#' @param axes a length 2 vector specifying the axes to plot
-#' @return \item{eig}{a matrix containing all the eigenvalues, the percentage of variance and the cumulative percentage of variance}
-#' @return \item{separate.analyses}{the results for the separate analyses for each group}
-#' @return \item{group}{a list of matrices containing all the results for the groups 
-#' (Lg and RV coefficients, coordinates, square cosine, contributions, 
-#' distance to the origin)}
-#' @return \item{partial.axes}{a list of matrices containing all the results for the 
-#' partial axes (coordinates, correlation between variables and axes)}
-#' @return \item{ind}{a list of matrices containing all the results for the
-#' individuals (coordinates, square cosine, contributions)}
-#' @return \item{ind.partiel}{a matrice containing the coordinates of the partial individuals}
-#' @return \item{quanti.var}{a list of matrices containing all the results for the quantitative variables
-#' (coordinates, contribution, cos2)}
-#' @return \item{quali.var}{a list of matrices containing all the results for the categorical variables
-#' (coordinates, contribution, cos2)}
-#' @return \item{global.pca}{The results of the MFAmix considered as a unique weighted PCAmix} 
-#' @examples
-#' #blablabla
-#' blablablza
-#'@keywords multivariate
-MFAmix<-function(data,group,name.group,ndim,graph=TRUE,axes=c(1,2)){
+MFAmix<-function(data, groups, name.groups, ndim=5, rename.level=FALSE, 
+                 graph=TRUE, axes=c(1,2))
+{
   
   cl <- match.call()
   
+  if(length(groups)!=ncol(data))
+    stop("\"groups\" must be a vector of size the number of variables in \"data\"")
+  
+  #test that name.groups doesn't contain special characters
+  ch<-paste(name.groups,collapse="")
+  ch<-strsplit(ch, split="")
+  ch<-tolower(unique(unlist(ch)))
+  res.ch<-unique(is.element(ch,c(letters,0,1,2,3,4,5,6,7,8,9,"_")))
+  if(length(res.ch)==2)
+    stop("In \"name.groups\" spaces and special characters are not allowed.")
   
   n<-nrow(data)
   
-  nbr.group<-length(unique(group))
-  Lst.group<-Cut.Group(base=data,group=group,name.group=name.group) 
-  long.group<-sapply(Lst.group,ncol)
-  typ.group<-unlist(sapply(Lst.group,Tri.Data)[3,])
+  nbr.groups<-length(unique(groups))
   
-  #Si group n est pas dans l ordre (ex: c(1,1,1,2,2,1,3,3))
-  #On rearrange data et le vect group
+  if (length(name.groups)!=nbr.groups)
+    stop("invalid length of \"name.groups\"")
+  
+  Lst.groups<-splitgroups(base=data,groups=groups,name.groups=name.groups) 
+  long.groups<-sapply(Lst.groups,ncol)
+  typ.groups<-unlist(sapply(Lst.groups,splitmix)[3,])
+  
   DATA.ord<-data.frame(matrix(NA,ncol=ncol(data),nrow=nrow(data)))
   init<-0
-  for(g in 1:nbr.group){
-    DATA.ord[,c((1+init):(init+ncol(Lst.group[[g]])))]<-Lst.group[[g]]
-    init<-init+ncol(Lst.group[[g]])
+  for(g in 1:nbr.groups)
+  {
+    DATA.ord[,c((1+init):(init+ncol(Lst.groups[[g]])))]<-Lst.groups[[g]]
+    init<-init+ncol(Lst.groups[[g]])
   }
-  colnames(DATA.ord)<-unlist(sapply(Lst.group,colnames))
+  colnames(DATA.ord)<-unlist(sapply(Lst.groups,colnames))
   rownames(DATA.ord)<-rownames(data)
-  group.ord<-NULL
-  for(g in 1:nbr.group){
-    group.ord<-c(group.ord,rep(g,ncol(Lst.group[[g]])))
+  groups.ord<-NULL
+  for(g in 1:nbr.groups){
+    groups.ord<-c(groups.ord,rep(g,ncol(Lst.groups[[g]])))
   }
-  group<-group.ord
+  groups<-groups.ord
   data<-DATA.ord
   
   ordre.var.data<-data.frame(colnames(data),seq(from=1,by=1,to=ncol(data)))
   colnames(ordre.var.data)<-c("nom.var","ordre.var")
   
-  
-  
-  tab.indic.names<-cbind(colnames(data),rep(name.group,long.group),rep(typ.group,long.group),rep(long.group,long.group))
+  tab.indic.names<-cbind(colnames(data),rep(name.groups,long.groups),rep(typ.groups,long.groups),rep(long.groups,long.groups))
   rownames(tab.indic.names)<-NULL
   tab.indic.names<-data.frame(tab.indic.names)
-  colnames(tab.indic.names)<-c("var","group","type","nb.var")
-  
-  
+  colnames(tab.indic.names)<-c("var","groups","type","nb.var")
   
   Res.separe.pcamix<-list()
+  Lst.groups.stand<-list()
   
-  for(i in 1:nbr.group){
-    base.qt<-Tri.Data(Lst.group[[i]])$X.quanti
-    base.ql<-Tri.Data(Lst.group[[i]])$X.quali
-    Res.separe.pcamix[[i]]<-PCAmix(X.quanti=base.qt,X.quali=base.ql,ndim=ndim,graph=F)
+  for(i in 1:nbr.groups){
+    base.qt<-splitmix(Lst.groups[[i]])$X.quanti
+    base.ql<-splitmix(Lst.groups[[i]])$X.quali
+    Res.separe.pcamix[[i]]<-PCAmix(X.quanti=base.qt, X.quali=base.ql, ndim=ndim, rename.level=rename.level, graph=F)
+    Lst.groups.stand[[i]]<-Res.separe.pcamix[[i]]$Z
   }
-  names(Res.separe.pcamix)<-name.group
+  names(Res.separe.pcamix)<-names(Lst.groups.stand)<-name.groups
   
-  eig.group<-list()
-  for(i in 1:nbr.group){
-    eig.group[[i]]<-Res.separe.pcamix[[i]]$eig[1]
+  eig.groups<-list()
+  for(i in 1:nbr.groups){
+    eig.groups[[i]]<-Res.separe.pcamix[[i]]$eig[1]
   }
-  eig.group<-unlist(eig.group)
-  names(eig.group)<-paste(name.group)
-  
+  eig.groups<-unlist(eig.groups)
+  names(eig.groups)<-paste(name.groups)
   
   ponde.qt<-NULL
-  base.qt<-Tri.Data(data)$X.quanti
-  indic.qt.group<-tab.indic.names[match(colnames(base.qt),tab.indic.names$var),2]
-  ponde.qt<-eig.group[match(indic.qt.group,names(eig.group))]
-
+  base.qt<-splitmix(data)$X.quanti
+  indic.qt.groups<-tab.indic.names[match(colnames(base.qt),tab.indic.names$var),2]
+  ponde.qt<-eig.groups[match(indic.qt.groups,names(eig.groups))]
+  
   ponde.ql<-NULL
-  base.ql<-Tri.Data(data)$X.quali
+  base.ql<-splitmix(data)$X.quali
   if (is.null(base.ql)==FALSE){
-    indic.ql.group<-tab.indic.names[match(colnames(base.ql),tab.indic.names$var),2]
-    ponde.ql<-eig.group[match(indic.ql.group,names(eig.group))]
+    indic.ql.groups<-tab.indic.names[match(colnames(base.ql),tab.indic.names$var),2]
+    ponde.ql<-eig.groups[match(indic.ql.groups,names(eig.groups))]
     ponde.ql<-rep(ponde.ql,apply(base.ql,2,nb.level))
   }
   
   ponderation<-c(ponde.qt,ponde.ql)
   ponderation<-1/ponderation
-  Res.total<-PCAmix(X.quanti=base.qt,X.quali=base.ql,ndim=ndim,graph=FALSE,weight.col=ponderation)
+  Res.total<-PCAmix(X.quanti=base.qt,X.quali=base.ql,ndim=ndim, rename.level=rename.level, graph=FALSE,weight.col=ponderation)
   
-  
-  #On rearrange les squared loadings pour qu'ils soient dans l ordre en suivant les groupes
-  sload.order<-data.frame(matrix(NA,ncol=ncol(Res.total$sload),nrow=nrow(Res.total$sload)))
-  for (i in 1:nrow(Res.total$sload)){
+  sqload.order<-data.frame(matrix(NA,ncol=ncol(Res.total$sqload),nrow=nrow(Res.total$sqload)))
+  for (i in 1:nrow(Res.total$sqload)){
     index<-as.character(ordre.var.data[i,1])
-    sload.order[i,]<-Res.total$sload[index,]
+    sqload.order[i,]<-Res.total$sqload[index,]
   }
-  rownames(sload.order)<-ordre.var.data[,1]
-  colnames(sload.order)<-colnames(Res.total$sload)
-  Res.total$sload<-sload.order
-  ##################
-  ponderation.group<-ponderation[match(name.group,names(ponderation))]
-  ndim<-ncol(Res.total$scores)
+  rownames(sqload.order)<-ordre.var.data[,1]
+  colnames(sqload.order)<-colnames(Res.total$sqload)
+  Res.total$sqload<-sqload.order
   
+  ponderation.groups<-ponderation[match(name.groups,names(ponderation))]
+  ndim<-ncol(Res.total$ind$coord)
   
-  #Individus partiels
-  data.partiel <- vector(mode = "list", length = nbr.group)
-  names(data.partiel) <- name.group
+  #partial individuals
+  data.partiel <- vector(mode = "list", length = nbr.groups)
+  names(data.partiel) <- name.groups
   
-  for (g in 1:nbr.group){
+  for (g in 1:nbr.groups){
     col.interet<-rownames(Res.separe.pcamix[[g]]$V)
     data.partiel[[g]]<-data.frame(Res.total$W[,col.interet])
     colnames(data.partiel[[g]])<-col.interet
@@ -133,134 +110,144 @@ MFAmix<-function(data,group,name.group,ndim,graph=TRUE,axes=c(1,2)){
   V<-Res.total$V
   M<-Res.total$M
   
-  res.ind.partiel <- vector(mode = "list", length = nbr.group)
-  names(res.ind.partiel) <- name.group
-  for (g in 1:nbr.group) {
-    coord.ind.sup<-nbr.group*data.partiel[[g]]
+  res.ind.partiel <- vector(mode = "list", length = nbr.groups)
+  names(res.ind.partiel) <- name.groups
+  for (g in 1:nbr.groups) {
+    coord.ind.sup<-nbr.groups*data.partiel[[g]]
     coord.ind.sup<-sweep(coord.ind.sup,2,STATS=M[colnames(coord.ind.sup)],FUN="*")
     coord.ind.sup<-as.matrix(coord.ind.sup)%*%V[colnames(coord.ind.sup),]
     res.ind.partiel[[g]]$coord.sup <- coord.ind.sup
   }
   
-  ndim.max.group<-NULL
-  for (g in 1:nbr.group){
-    ndim.max.group<-c(ndim.max.group,ncol(res.ind.partiel[[g]]$coord.sup))
+  ndim.max.groups<-NULL
+  for (g in 1:nbr.groups){
+    ndim.max.groups<-c(ndim.max.groups,ncol(res.ind.partiel[[g]]$coord.sup))
   }
   
   nom.ligne <- NULL
   for (i in 1:n) {
     ind.tmp <- rownames(data)[i]
-    nom.ligne <- c(nom.ligne, paste(ind.tmp, name.group, sep = "."))
+    nom.ligne <- c(nom.ligne, paste(ind.tmp, name.groups, sep = "."))
   }
-  coord.ind.partiel <- as.data.frame(matrix(NA, (n *nbr.group), ndim))
+  coord.ind.partiel <- as.data.frame(matrix(NA, (n *nbr.groups), ndim))
   rownames(coord.ind.partiel) <- nom.ligne
   colnames(coord.ind.partiel) <- paste("Dim", c(1:ndim), sep = ".")  
-  liste.ligne <- seq(1, n* nbr.group, by = nbr.group)  
-  for (g in 1:nbr.group){
-    coord.ind.partiel[liste.ligne +  g - 1, ] <- res.ind.partiel[[g]]$coord.sup[,1:ndim.max.group[g]]
+  liste.ligne <- seq(1, n* nbr.groups, by = nbr.groups)  
+  for (g in 1:nbr.groups){
+    coord.ind.partiel[liste.ligne +  g - 1, ] <- res.ind.partiel[[g]]$coord.sup[,1:ndim.max.groups[g]]
   }
   
-  #Rapports d inertie
+  #inertia
   Inertie.tot <- vector(length = ndim)
-  for (g in 1:nbr.group){
+  for (g in 1:nbr.groups){
     Inertie.tot <- Inertie.tot + apply(res.ind.partiel[[g]]$coord.sup^2 * n, 2, sum)}
   
-  rap.inertie <- apply(Res.total$res.ind$coord^2 * n, 2, sum) * nbr.group/Inertie.tot
+  rap.inertie <- apply(Res.total$ind$coord^2 * n, 2, sum) * nbr.groups/Inertie.tot
   
-
-  #Resultats sur les axes partiels
-  Res.partial.axes.group<-function(nom.group){
-    score.sep<-eval(parse(text=paste("Res.separe.pcamix$",nom.group,"$scores",sep="")))
-    colnames(score.sep)<-paste(colnames(score.sep),nom.group,sep=".")
-    score.global<-Res.total$scores
+  #partial axes
+  Res.partial.axes.groups<-function(nom.groups){
+    score.sep<-eval(parse(text=paste("Res.separe.pcamix$",nom.groups,"$ind$coord",sep="")))
+    colnames(score.sep)<-paste(colnames(score.sep),nom.groups,sep=".")
+    score.global<-Res.total$ind$coord
     cor(score.sep,score.global)  
   }
   
   partial.axes.coord<-NULL
-  for (g in 1:nbr.group) {
-    a<-Res.partial.axes.group(name.group[g])
+  for (g in 1:nbr.groups) {
+    a<-Res.partial.axes.groups(name.groups[g])
     partial.axes.coord<-rbind(partial.axes.coord,a)
   }
   partial.axes.coord
   
-  
-  #Contribution de toutes les variables                                     
-  contrib.total<-rbind(Res.total$res.quanti$contrib,Res.total$res.categ$contrib.quali)
+  #variables contributions                                  
+  contrib.total<-rbind(Res.total$quanti$contrib,Res.total$quali$contrib)
   contrib.total<-contrib.total[match(as.vector(tab.indic.names$var),rownames(contrib.total)),]
   
-  
-  #Resultats pour les groupes
-  contrib.group<-data.frame(matrix(NA,nrow=nbr.group,ncol=ndim))
+  #groups
+  contrib.groups<-data.frame(matrix(NA,nrow=nbr.groups,ncol=ndim))
   a<-0
-  for (i in 1:nbr.group){
-    if (is.vector(contrib.total[(a+1):(a+long.group[i]),]))
-    {contrib.group[i,]<-contrib.total[(a+1):(a+long.group[i]),]} else
-    { contrib.group[i,]<-apply(contrib.total[(a+1):(a+long.group[i]),],2,sum)
+  for (i in 1:nbr.groups){
+    if (is.vector(contrib.total[(a+1):(a+long.groups[i]),]))
+    {contrib.groups[i,]<-contrib.total[(a+1):(a+long.groups[i]),]} else
+    { contrib.groups[i,]<-apply(contrib.total[(a+1):(a+long.groups[i]),],2,sum)
     }
-    a<-a+long.group[i]
+    a<-a+long.groups[i]
   }
-  rownames(contrib.group)<-name.group
-  colnames(contrib.group)<-colnames(partial.axes.coord)
+  rownames(contrib.groups)<-name.groups
+  colnames(contrib.groups)<-colnames(partial.axes.coord)
   
   
-  coord.group<-sweep(contrib.group/100,2,STATS=Res.total$eig[1:ndim,1],FUN="*")
+  coord.groups<-contrib.groups
+  contrib.groups.pct<-sweep(coord.groups,2,STATS=Res.total$eig[1:ndim,1],FUN="/")*100
   
-  dist.group<-NULL
-  for (i in 1:nbr.group){
+  dist.groups<-NULL
+  for (i in 1:nbr.groups){
     valP<-Res.separe.pcamix[[i]]$eig[,1]
     dis<-valP/valP[1]
     dis<-sum(dis^2)
-    dist.group<-c(dist.group,dis)
+    dist.groups<-c(dist.groups,dis)
   }
-  names(dist.group)<-name.group
+  names(dist.groups)<-name.groups
   
-  cos2.group<-sweep(coord.group^2,1,STATS=dist.group,FUN="/")
+  cos2.groups<-sweep(coord.groups^2,1,STATS=dist.groups,FUN="/")
   
-  Lg.group<-Lg.pond(Lst.group,ponderation.group)
-  RV.group<-RV.pond(Lst.group,ponderation.group)
   
-  #Reorganisation des résultats
-  res.group<-list(Lg=Lg.group,RV=RV.group,coord=coord.group,contrib=contrib.group,dist2=dist.group,cos2=cos2.group)
-  res.partial.axes<-list(coord=partial.axes.coord,cor=partial.axes.coord)  
-  Res.total$res.ind$coord.partiel<-coord.ind.partiel
+  Lg.groups<-Lg.pond(Lst.groups.stand,ponderation.groups)
+  RV.groups<-RV.pond(Lst.groups.stand,ponderation.groups)
   
-  #Recapitulatif des valeurs propres des analyses séparées
+  res.groups<-list(Lg=Lg.groups,RV=RV.groups,coord=coord.groups,contrib.pct=contrib.groups.pct,dist2=dist.groups,cos2=cos2.groups)
+  res.partial.axes<-list(coord=partial.axes.coord)  
+  Res.total$ind$coord.partial<-coord.ind.partiel
+  
+  #separated analysis
   Recap.eig<-list()
-  for (i in 1:nbr.group){
+  for (i in 1:nbr.groups){
     if (nrow(Res.separe.pcamix[[i]]$eig)<ndim){
       Recap.eig[[i]]<-c(Res.separe.pcamix[[i]]$eig[,1],rep(NA,ndim-nrow(Res.separe.pcamix[[i]]$eig)))
     } else       {
       Recap.eig[[i]]<-c(Res.separe.pcamix[[i]]$eig[1:ndim,1])
     }
   }
-
-  Recap.eig.frame<-matrix(NA,ncol=nbr.group,nrow=ndim)
-  for (i in 1:nbr.group){
+  
+  Recap.eig.frame<-matrix(NA,ncol=nbr.groups,nrow=ndim)
+  for (i in 1:nbr.groups){
     Recap.eig.frame[,i]<-Recap.eig[[i]]
   }
-  colnames(Recap.eig.frame)<-name.group
+  colnames(Recap.eig.frame)<-name.groups
   rownames(Recap.eig.frame)<- paste("dim", 1:ndim, sep =" ")
   
-  
-  res<-list(call=cl,eig=Res.total$eig,separate.analyses=Res.separe.pcamix,group=res.group,partial.axes=res.partial.axes,inertia.ratio=rap.inertie,
-            ind=Res.total$res.ind,quanti.var=Res.total$res.quanti,quali.var=Res.total$res.categ,
-            global.pca=Res.total,ind.partiel=res.ind.partiel,lst.group=group,recap.eig.separate=Recap.eig.frame)
+  res<-list(call=cl,
+            eig=Res.total$eig,
+            eig.separate=Recap.eig.frame,
+            separate.analyses=Res.separe.pcamix,
+            groups=res.groups,
+            partial.axes=res.partial.axes,
+            inertia.ratio=rap.inertie,
+            ind=Res.total$ind,
+            quanti=Res.total$quanti,        
+            levels=Res.total$levels,
+            quali=Res.total$quali,
+            coef=Res.total$coef,
+            sqload=Res.total$sqload,
+            global.pca=Res.total,
+            ind.partial=res.ind.partiel,
+            lst.groups=groups
+  )
   
   
   class(res)<-c("MFAmix","list")
-  print.MFAmix(res)
   
   if (graph) {  
-    plot.MFAmix(res,axes=axes,choice="axes",habillage="group")
-    plot.MFAmix(res,axes=axes,choice="group",habillage="ind")
-    plot.MFAmix(res,axes=axes,choice="ind",invisible="quali")
-    plot.MFAmix(res,axes=axes,choice="loadings",habillage="group")
+    plot.MFAmix(res,axes=axes,choice="axes",coloring.var="groups")
+    plot.MFAmix(res,axes=axes,choice="groups",coloring.var="groups")
+    plot.MFAmix(res,axes=axes,choice="ind",cex=0.8)
+    plot.MFAmix(res,axes=axes,choice="sqload", coloring.var="groups")
     
-    if (!is.null(Res.total$res.quanti$coord)){
-      plot.MFAmix(res,axes=axes,choice="var",habillage="group")
+    if (!is.null(Res.total$quanti$coord)){
+      plot.MFAmix(res,axes=axes,choice="cor", coloring.var="groups")
     }
-    if (!is.null(Res.total$res.categ$coord)){
-      plot.MFAmix(res,axes=axes,choice="ind",invisible="ind")
+    if (!is.null(Res.total$levels$coord)){
+      plot.MFAmix(res,axes=axes,choice="levels",coloring.var="groups")
     }
   }
   

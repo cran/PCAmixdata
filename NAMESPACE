@@ -1,4 +1,4 @@
-exportPattern(PCAmix,PCArot,plot.PCAmix,summary.PCAmix,print.PCAmix,predict.PCAmix,recodqual,recodquant,RV,RV.pond,recod,sol.2dim,tab.disjonctif.NA,svd.triplet,Cut.Group,Tri.Data,nb.level,Lg,Lg.pond,MFAmix,summary.MFAmix,print.MFAmix,plot.MFAmix,predict.MFAmix)
+export(PCAmix,PCArot,plot.PCAmix,summary.PCAmix,print.PCAmix,predict.PCAmix,recodqual,recodquant,RV,RV.pond,nb.level,recod,sol.2dim,tab.disjonctif.NA,svd.triplet,splitgroups,splitmix,Lg,Lg.pond,MFAmix,summary.MFAmix,print.MFAmix,plot.MFAmix,predict.MFAmix)
 S3method(print,PCAmix)
 S3method(plot,PCAmix)
 S3method(summary,PCAmix)

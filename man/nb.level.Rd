@@ -14,3 +14,4 @@
   Return the number of levels of a factor
 }
 
+\keyword{internal}

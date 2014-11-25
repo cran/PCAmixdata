@@ -26,6 +26,10 @@ svd.triplet(X, row.w=NULL, col.w=NULL, ncp=Inf)
 \item{v}{a matrix whose columns contain the right singular vectors of 'x'.}
 }
 
+\details{
+This function has been taken from the package  \bold{FactoMineR}. It is then identical.
+}
+
 \seealso{ \code{\link{svd}}}
 
 \keyword{algebra}

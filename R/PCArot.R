@@ -73,8 +73,8 @@ PCArot<-function(obj,dim,itermax=100,graph=TRUE)
     for (j in 1:(p-p1)) {
       C[j,] <- apply(A2[which(indexj==(j+p1))-p1,],2,FUN=function(x) {sum(x^2)}) }
   }	
-  sload.rot <- rbind(A1^2,C)
-  var.rot <- apply(sload.rot,2,sum)
+  sqload.rot <- rbind(A1^2,C)
+  var.rot <- apply(sqload.rot,2,sum)
   eig <- matrix(0,dim,2)
   colnames(eig) <- c("Variance","Proportion")
   rownames(eig) <- names(var.rot)
@@ -82,7 +82,7 @@ PCArot<-function(obj,dim,itermax=100,graph=TRUE)
   eig[,2] <- eig[,1]/sum(obj$eig[,1])*100
   scores.rot <- sweep(scores.stand.rot,2,STATS=sqrt(var.rot),FUN="*")
   V.rot <- V%*%diag(1/sqrt(obj$eig[1:dim,1]))%*%T%*%diag(sqrt(eig[,1]))
-  colnames(sload.rot) <- names(var.rot) <- colnames(scores.rot) <- colnames(scores.stand.rot)<- colnames(V.rot)<-paste("dim", 1:dim, sep = "",".rot")
+  colnames(sqload.rot) <- names(var.rot) <- colnames(scores.rot) <- colnames(scores.stand.rot)<- colnames(V.rot)<-paste("dim", 1:dim, sep = "",".rot")
   rownames(V.rot) <- colnames(Z)
   coef <- structure(vector(mode = "list", length = dim), names = paste("dim", 1:dim, sep = "",".rot"))
   gc <- obj$rec$g #gravity center
@@ -96,22 +96,26 @@ PCArot<-function(obj,dim,itermax=100,graph=TRUE)
   }
   V.rot<-(obj$M)^(-1/2)*V.rot
   
-  res <- list(call = cl,theta=theta,T=T,eig=eig,coef=coef,sload=sload.rot,
-              scores.stand=scores.stand.rot,scores=scores.rot,
+  res.ind<-list(coord=scores.rot)
+  res.quanti<-list(coord=A1)
+  res.levels<-list(coord=A2coord)
+  res.quali<-list(coord=C)
+  res <- list(call = cl,theta=theta,T=T,eig=eig,ind=res.ind,quanti=res.quanti,levels=res.levels,quali=res.quali,
+              coef=coef,sqload=sqload.rot, scores.stand=scores.stand.rot,scores=scores.rot,
               categ.coord=A2coord,quanti.cor=A1,quali.eta2=C,ndim=dim,rec=obj$rec,iter=iter,V=V.rot)
   class(res) <- "PCAmix"
   if (graph) {
     plot.PCAmix(res,main="Scores after rotation")
     if (p1!=p) {
       dev.new()
-      plot.PCAmix(res,choice="categ",main="Categories after rotation")
+      plot.PCAmix(res,choice="levels",main="Categories after rotation")
     }
     if (p1!=0) {
       dev.new()
       plot.PCAmix(res,choice="cor",main="Correlation circle after rotation")
     }
     dev.new()
-    plot.PCAmix(res,choice="var",main="Squared loadings after rotation")
+    plot.PCAmix(res,choice="sqload",main="Squared loadings after rotation")
   }
   return(res)	
 }

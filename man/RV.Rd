@@ -5,16 +5,19 @@
   RV(liste.mat)
 }
 \arguments{
-  \item{liste.mat}{a list of \code{G} matrices}
+  \item{liste.mat}{a list of \code{k} matrices.}
 }
 \value{
-  \item{RV}{a data frame with \code{G} rows and \code{G}
-  colums with all the RV coefficients}
+  \item{RV}{a (\code{k}, \code{k}) matrix containing the RV coefficients.}
 }
 \description{
-  Compute a data fame with all the RV coefficients between
-  each matrix of a list
+Computes RV coefficients between matrices.
 }
+
+\seealso{
+\code{\link{RV.pond}}, \code{\link{Lg}}, \code{\link{Lg.pond}}, 
+}
+
 \examples{
 V0<-c("a","b","a","a","b")
 V01<-c("c","d","e","c","e")
@@ -32,5 +35,5 @@ RV(liste.mat)
 \references{
   {Escofier B et Pages J (1998), Analyses factorielles simples et multiples, Dunod, 3e ed.
   
-  J.Pages,Analyse factorielle multiple appliquee aux variables qualitatives et aux donnees mixtes. Revue de statistique appliquee, tome 50, num 4 (2002), p. 5-37}
+  Pages J, Analyse factorielle multiple appliquee aux variables qualitatives et aux donnees mixtes. Revue de statistique appliquee, tome 50, num 4 (2002), p. 5-37}
 }

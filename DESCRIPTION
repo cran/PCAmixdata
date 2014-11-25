@@ -1,21 +1,13 @@
 Package: PCAmixdata
 Type: Package
-Title: Multivariate analysis for a mixture of quantitative and
-        qualitative data
-Version: 2.1
-Date: 2014-02-10
-Author: Marie Chavent and Vanessa Kuentz and Amaury Labenne and Benoit Liquet and Jerome Saracco
+Title: Multivariate Analysis of Mixed Data
+Version: 2.2
+Date: 2014-11-25
+Author: Marie Chavent and Vanessa Kuentz and Amaury Labenne and Benoit Liquet and Jerome Saracco.
 Maintainer: Amaury Labenne <amaury.labenne@irstea.fr>
-Description: Principal Component Analysis, orthogonal rotation and multiple factor 
-  analysis for a mixture of quantitative and qualitative variables.
+Description: Principal Component Analysis, orthogonal rotation and multiple factor analysis for a mixture of quantitative and qualitative variables.
 License: GPL (>= 2.0)
-Collate: 'PCAmix.R' 'PCArot.R' 'plot.PCAmix.R' 'predict.PCAmix.R'
-        'predict.MFAmix.R' 'print.PCAmix.R' 'recod.R' 'recodqual.R'
-        'recodquant.R' 'sol.2dim.R' 'summary.PCAmix.R'
-        'tab.disjonctif.NA.R' 'svd.triplet.R' 'Cut.Group.R'
-        'nb.level.R' 'Tri.Data.R' 'Lg.pond.R' 'Lg.R' 'RV.R' 'RV.pond.R'
-        'MFAmix.R' 'plot.MFAmix.R' 'print.MFAmix.R' 'summary.MFAmix.R'
-Packaged: 2014-02-10 11:04:58 UTC; Amaury.Labenne
+Packaged: 2014-12-05 10:38:10 UTC; Amaury.Labenne
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-02-10 12:50:14
+Date/Publication: 2014-12-05 12:54:58

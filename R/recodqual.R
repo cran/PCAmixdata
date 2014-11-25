@@ -1,20 +1,8 @@
-#' @export
-#' @title Recoding of the qualitative data matrix
-#' @name recodqual
-#' @param X the qualitative data matrix
-#' @return \item{G}{The indicator matix of X with missing values replaced by 0}
-#' @examples
-#' data(vnf) 
-#' X <- vnf[1:10,9:12]
-#' tab.disjonctif.NA(X)
-#' recodqual(X)
-
-
 recodqual <-
-function(X)
+function(X,rename.level=FALSE)
 	{
 		X <- as.matrix(X)
-		GNA <- tab.disjonctif.NA(X)
+		GNA <- tab.disjonctif.NA(X,rename.level)
 		G <- replace(GNA,is.na(GNA),0)
 		ns <- apply(G,2,sum)
 		nmiss <- apply((apply(GNA,2,is.na)),2,sum)

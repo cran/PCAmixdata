@@ -21,15 +21,7 @@ further arguments passed to or from other methods.
 \value{
 Returns the matrix of squared loadings. For quantitative variables (resp. qualitative), squared loadings are the squared correlations (resp. the correlation ratios) with the scores or with the rotated (standardized) scores.
 }
-\references{
-Chavent, M., Kuentz, V., Saracco, J. (2011), Orthogonal Rotation in PCAMIX
 
-Kiers, H.A.L., (1991), Simple structure in Component Analysis Techniques for mixtures of
-qualitative and quantitative variables, Psychometrika, 56, 197-212.
-}
-\author{
-Marie Chavent <marie.chavent@u-bordeaux2.fr>, Vanessa Kuentz, Benoit Liquet, Jerome Saracco
-}
 
 \seealso{
 \code{\link{plot.PCAmix}},\code{\link{PCAmix}},\code{\link{PCArot}}, 

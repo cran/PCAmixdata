@@ -1,18 +1,3 @@
-#' @export
-#' @title Recoding of the quantitative data matrix
-#' @name recodquant
-#' @param X the quantitative data matrix
-#' @return \item{Z}{the standardized quantitative data matrix (centered and reduced with the standard deviations)}
-#' @return \item{g}{the means of the columns of X}
-#' @return \item{s}{the standard deviations of the columns of X (population version with 1/n)}
-#' @return \item{Xcod}{The quantitative matix X with missing values replaced with the column's mean values}
-#' @examples 
-#'data(decathlon)
-#'X <- decathlon[1:5,1:5]
-#'X[1,2] <- NA
-#'X[2,3] <-NA
-#'rec <- recodquant(X)
-
 recodquant <-
   function(X)
   {
