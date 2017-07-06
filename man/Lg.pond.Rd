@@ -1,26 +1,21 @@
+
 \name{Lg.pond}
 \alias{Lg.pond}
 \title{Coefficient Lg with ponderation}
 \usage{
-  Lg.pond(liste.mat, ponde)
+Lg.pond(liste.mat, ponde)
 }
 \arguments{
-  \item{liste.mat}{ a list of \code{k} matrices.}
+\item{liste.mat}{a list of \code{G} matrix}
 
-  \item{ponde}{ a vector of size \code{k} with the
-  ponderation of each matrix.}
+\item{ponde}{a vector of size \code{G} with the ponderation associated to each matrix}
 }
 \value{
-Returns a matrix  of dimension (\code{k}, \code{k}) with all the weighted Lg coefficients.
+\item{Lg.pond}{a data frame with \code{G} rows and \code{G} colums with all the Lg coefficients ponderated}
 }
 \description{
-  Computes the weighted Lg coefficient between matrices.
+Compute a data fame with all the Lg coefficients between each matrix of a list ponderated
 }
-
-\seealso{
-\code{\link{RV}}, \code{\link{RV.pond}}, \code{\link{Lg}}, 
-}
-
 \examples{
 V0<-c("a","b","a","a","b")
 V01<-c("c","d","e","c","e")
@@ -32,14 +27,7 @@ V5<-c("grand","moyen","moyen","petit","grand")
 G1<-data.frame(V0,V01,V1)
 G2<-data.frame(V2,V3)
 G3<-data.frame(V4,V5)
-ponderation<-c(1,2,1)
 liste.mat<-list(G1,G2,G3)
-Lg.pond(liste.mat,ponderation)
-}
-
-\references{
-  {Escofier B et Pages J (1998), Analyses factorielles simples et multiples, Dunod, 3e ed.
-  
-  Pages J, Analyse factorielle multiple appliquee aux variables qualitatives et aux donnees mixtes. Revue de statistique appliquee, tome 50, num 4 (2002), p. 5-37}
+Lg(liste.mat)
 }
 
