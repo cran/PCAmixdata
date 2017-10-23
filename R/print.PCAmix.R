@@ -1,5 +1,5 @@
 #' @export
-#' @method print PCAmix
+#' @keywords internal
 print.PCAmix <- function(x, ...){
   if (!inherits(x, "PCAmix")) 
     stop("use only with \"PCAmix\" objects")
@@ -46,5 +46,5 @@ print.PCAmix <- function(x, ...){
     sup[3,] <- c("$sqload.sup", "squared loadings of the supplementary variables")
     res <- rbind(res,sup)
   }
-  print(res)
+  utils::write.table(res,row.names = FALSE)
 }

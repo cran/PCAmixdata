@@ -47,6 +47,7 @@ NULL
 #' eigenvalues are then equal to the usual eigenvalues of MCA times p. 
 #' When all the variables are quantitative, PCAmix gives exactly the same 
 #' results as standard PCA.
+#' 
 #' @return  \item{eig}{a matrix containing the eigenvalues, the percentages of variance and the cumulative percentages of variance.}
 #' \item{ind}{a list containing the results for the individuals (observations):
 #'  \itemize{

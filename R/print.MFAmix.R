@@ -1,5 +1,5 @@
 #' @export
-#' @method print MFAmix
+#' @keywords internal
 print.MFAmix<-function (x, ...) 
 {
   res.mfa <- x
@@ -38,6 +38,6 @@ print.MFAmix<-function (x, ...)
     res <- rbind(res,sup)
   }
   
-  print(res)
+  utils::write.table(res,row.names = FALSE)
   
 }

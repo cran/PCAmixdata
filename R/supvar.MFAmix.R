@@ -1,6 +1,5 @@
 #' @export
 #' @name supvar.MFAmix
-#' @method supvar MFAmix
 #' @title  Supplementary variables in MFAmix
 #' @description Performs the coordinates of supplementary variables and groups on the component of an object of class \code{MFAmix}.
 #' @param obj an object of class \code{MFAmix}.

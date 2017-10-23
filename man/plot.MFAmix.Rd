@@ -4,7 +4,7 @@
 \alias{plot.MFAmix}
 \title{Graphical outputs of MFAmix}
 \usage{
-\method{plot}{MFAmix}(x, axes = c(1, 2), choice = "axes", label = TRUE,
+\method{plot}{MFAmix}(x, axes = c(1, 2), choice = "ind", label = TRUE,
   coloring.var = "not", coloring.ind = NULL, nb.partial.axes = 3,
   col.ind = NULL, col.groups = NULL, partial = NULL, lim.cos2.plot = 0,
   lim.contrib.plot = 0, xlim = NULL, ylim = NULL, cex = 1,

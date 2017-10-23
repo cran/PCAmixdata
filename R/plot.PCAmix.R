@@ -1,4 +1,3 @@
-##' @method plot PCAmix
 #' @export
 #' @name plot.PCAmix
 #' @title  Graphical outputs of PCAmix and PCArot

@@ -15,7 +15,6 @@ supvar <- function(obj,...) {
 
 #' @export
 #' @name supvar.PCAmix
-#' @method supvar PCAmix
 #' @title  Supplementary variables in PCAmix
 #' @description Performs the coordinates of supplementary variables on the
 #'   component of an object of class \code{PCAmix}.

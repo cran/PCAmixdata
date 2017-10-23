@@ -1,4 +1,4 @@
-#' @export
+# Singular Value Decomposition of a Matrix
 svd.triplet<-function (X, row.w = NULL, col.w = NULL, ncp = Inf) 
 {
   if (is.null(row.w)) 
@@ -46,3 +46,8 @@ svd.triplet<-function (X, row.w = NULL, col.w = NULL, ncp = Inf)
   res <- list(vs = vs, U = U, V = V)
   return(res)
 }
+
+# Returns the number of levels of a factor.
+nb.level<-function(fact){
+  return(length(levels(factor(fact))))
+} 
